@@ -1,0 +1,78 @@
+public class UserViewModel
+{
+    [Required]
+    [Display(Name = "Mobile Number")]
+    public string MobileNumber { get; set; }
+    // Other properties
+}
+11:06
+@model YourNamespace.Models.UserViewModel
+@{
+    ViewBag.Title = "Mobile Number Validation";
+}
+<h2>Mobile Number Validation</h2>
+@using (Html.BeginForm("Submit", "Home", FormMethod.Post, new { id = "userForm" }))
+{
+    @Html.LabelFor(m => m.MobileNumber)
+    @Html.TextBoxFor(m => m.MobileNumber, new { @id = "MobileNumber", @onchange = "validateMobileNumber()" })
+    <span id="validationMessage" style="color:red;"></span>
+    // Other form fields
+    <button type="submit">Submit</button>
+}
+@section Scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        function validateMobileNumber() {
+            var mobileNumber = $('#MobileNumber').val();
+            $.ajax({
+                url: '@Url.Action("CheckMobileNumber", "Home")',
+                type: 'POST',
+                data: { mobileNumber: mobileNumber },
+                success: function (result) {
+                    if (!result.isValid) {
+                        $('#validationMessage').text(result.message);
+                    } else {
+                        $('#validationMessage').text('');
+                    }
+11:07
+using System.Linq;
+using System.Web.Mvc;
+using YourNamespace.Models;
+public class HomeController : Controller
+{
+    private static readonly List<string> existingMobileNumbers = new List<string>
+    {
+        "1234567890",
+        "0987654321"
+    };
+    [HttpPost]
+    public JsonResult CheckMobileNumber(string mobileNumber)
+    {
+        bool isValid = !existingMobileNumbers.Contains(mobileNumber);
+        string message = isValid ? "" : "Mobile number is already taken.";
+        return Json(new { isValid = isValid, message = message });
+    }
+    [HttpPost]
+    public ActionResult Submit(UserViewModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            // Save data or other logic
+            return RedirectToAction("Success");
+        }
+        return View(model);
+    }
+    public ActionResult Success()
+    {
+        return View();
+    }
+}
+
+
+
+
+
+
+
+
+
