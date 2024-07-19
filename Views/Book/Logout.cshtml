@@ -1,0 +1,35 @@
+﻿@model task_2._0.Models.Register
+
+@{
+    ViewBag.Title = "Logout";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+
+
+    <script src="~/Scripts/umd/popper.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+}
+
+<h2>Logout</h2>
+<html>
+
+<body class="center-body">
+    <div class="center-message">
+
+        <div class="alert alert-success">
+            @Html.Raw(ViewBag.SuccessMessage)
+        </div>
+        <p>
+            WELCOME BACK !!
+        </p>
+        <div>
+            @Html.ActionLink("REGISTER", "Register")
+        </div>
+
+
+
+
+    </div>
+</body>
+</html>

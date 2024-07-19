@@ -1,0 +1,98 @@
+﻿@model task_2._0.Models.AdminLogin
+
+@{
+    ViewBag.Title = "LoginAdmin";
+    Layout = "~/Views/Shared/_LayoutPage1.cshtml";
+    <link href="~/Content/StyleSheet1.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+
+
+    <script src="~/Scripts/umd/popper.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+}
+
+<h2>LoginAdmin</h2>
+@using (Html.BeginForm("LoginAdmin", "Book"))
+{
+    @*<div class="login-container">
+        <form asp-action="Login" method="post">
+            <div class="form-group">
+                <label for="Username">Username</label>
+                <input type="text" class="form-control" id="Username" name="Username" required />
+            </div>
+            <div class="form-group">
+                <label for="Password">Password</label>
+                <div class="input-group">
+                    <input type="password" class="form-control" id="Password" name="Password" required />
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fa fa-eye" id="togglePassword" style="cursor: pointer;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>*@
+    <table>
+                        <tr>
+                            <td>
+                                @Html.LabelFor(m => m.Email)
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Email)
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(m => m.Email)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.LabelFor(m => m.Password)
+                            </td>
+                            <td>
+                                @Html.PasswordFor(m => m.Password)
+                            </td>
+                            <td>
+                                @Html.ValidationMessageFor(m => m.Password)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @TempData["value"]
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                            </td>
+                            <td>
+                                <input type="submit" value="Signin" />
+                            </td>
+                        </tr>
+
+                    </table>
+
+
+        }
+    @*@section Scripts {
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                $('#togglePassword').click(function () {
+                    var passwordField = $('#Password');
+                    var passwordFieldType = passwordField.attr('type');
+                    if (passwordFieldType === 'password') {
+                        passwordField.attr('type', 'text');
+                        $(this).removeClass('fa-eye').addClass('fa-eye-slash');
+                    } else {
+                        passwordField.attr('type', 'password');
+                        $(this).removeClass('fa-eye-slash').addClass('fa-eye');
+                    }
+                });
+            });
+        </script>
+    }
+}*@
+
+
+

@@ -16,36 +16,41 @@ namespace task_2._0.Controllers
         {
             return View();
         }
-            public ActionResult Register(string email)
-        {
+        [HttpGet]
+            public ActionResult Register()
+            {
            // R1.CheckMobileExists(email);
 
             return View();
-        }
+            }
        
         [HttpPost]
         public ActionResult Register(Register r)
         {
-            //R1.CheckEmailExists(r.Email);
-            //R1.CheckMobileExists(r.Password);
-
             if (ModelState.IsValid)
-            {
-               
-
+           {
                 //if (R1.CheckUserExists(r.Name, r.Phone, r.Email))
                 //{
                 //    ModelState.AddModelError("", "User with same username, mobile number, or email already exists.");
                 //    return View(r);
                 //}
-
-
-
-                R1.Register(r);
+              R1.Register(r);
                 return RedirectToAction("RegisterSuccess");
-            }
+           }
 
             return View(r);
+            //if (ModelState.IsValid)
+            //{
+            //    try
+            //    {
+            //        R1.Register(r);
+            //        return RedirectToAction("RegisterSuccess");
+            //    }
+            //    catch
+            //    {
+            //        ModelState.AddModelError(ModelState,)
+            //    }
+            //}
 
         }
 
@@ -60,10 +65,10 @@ namespace task_2._0.Controllers
 
             if (R1.CheckMobileExists(Phone))
             {
-               return Json(new { success = false, message = "This email already exists." },JsonRequestBehavior.AllowGet);
+               return Json(new { success = false, message = "This mobile no  already exists." },JsonRequestBehavior.AllowGet);
             }
 
-            return Json(new { success = true, message = "mobile number are available." },JsonRequestBehavior.AllowGet);
+            return Json(new { success = true, message = "" },JsonRequestBehavior.AllowGet);
         }
         public JsonResult CheckUser1(string Email)
         {
@@ -77,7 +82,7 @@ namespace task_2._0.Controllers
                 return Json(new { success = false, message = "This email already exists." }, JsonRequestBehavior.AllowGet);
             }
 
-            return Json(new { success = true, message = "mobile number are available." }, JsonRequestBehavior.AllowGet);
+            return Json(new { success = true,message=""}, JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -142,13 +147,25 @@ namespace task_2._0.Controllers
         {
             return View();
         }
-        public ActionResult GetDetails()
+        //public ActionResult GetDetails()
+        //{
+        //    ModelState.Clear();
+        //    return View(R1.GetDetails());
+
+
+        //}
+        public ActionResult GetDetails(string searchString)
         {
-            ModelState.Clear();
-            return View(R1.GetDetails());
+            var model =R1.GetDetails().ToList(); // Replace db.Register with your actual data retrieval method
 
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                model = model.Where(s => s.Name.Contains(searchString)).ToList();
+            }
 
+            return View(model);
         }
+
         public ActionResult SEdit(Register r)
         {
             return View(R1.Details(r).Find(emp => emp.Email==r.Email ));
@@ -156,9 +173,12 @@ namespace task_2._0.Controllers
         [HttpPost]
         public ActionResult SEdit(string email, Register e1)
         {
-            R1.SEdit(e1);
-            return RedirectToAction("Details",new { e1.Email,e1.Password});
-            //return View();
+            if (ModelState.IsValid)
+            {
+                R1.SEdit(e1);
+                return RedirectToAction("Details", new { e1.Email, e1.Password });
+            }
+           return View();
         }
         public ActionResult Details(Register r)
         {

@@ -1,0 +1,114 @@
+﻿@model List<task_2._0.Models.Register>
+
+@*<div id="StudentDetails">*@
+<!--<h3>Student Details</h3>
+    <p>
+        <strong>ID:</strong> Id
+    </p>
+    <p>
+        <strong>Name:</strong> Model.Name
+    </p>
+    <p>
+        <strong>Phone:</strong> Model.Phone
+    </p>
+    <p>
+        <strong>Email:</strong> Model.Email
+    </p>
+    <p>
+        <strong>Country:</strong> Model.CountryId
+    </p>
+    <p>
+        <strong>Gender:</strong> Model.Gender
+    </p>
+    <p>
+        <strong>Date of Birth:</strong> Model.DateOfBirth.ToString("MM/dd/yyyy")
+    </p>
+    <p>
+        <strong>Is Active:</strong> (Model.IsActive ? "Yes" : "No")
+    </p>
+    <button id="closeDetails" class="btn btn-secondary">Close</button>
+</div>-->
+
+    @*<tr>
+        <th>
+            @Html.DisplayFor(Name)
+        </th>
+        <th>
+                @Html.DisplayFor(Password)
+            </th>
+
+        <th>
+                @Html.DisplayFor(Phone)
+            </th>
+        <th>
+            @Html.DisplayFor(Email)
+        </th>
+        <th>
+                @Html.DisplayFor(CountryId)
+            </th>
+        <th>
+                @Html.DisplayFor(Gender)
+            </th>
+            <th>
+                @Html.DisplayFor(Hobbies)
+            </th>
+            <th>
+                @Html.DisplayFor(DateOfBirth)
+        </th>
+        <th></th>
+    </tr>*@
+<table class="table">
+    <tr>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Password)
+            </td>
+        </tr>
+        <tr>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CountryId)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gender)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Hobbies)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+        </tr>
+
+
+    }
+        </tr>
+        <div class="logout-link">
+            @Html.ActionLink("GetDetails", "GetDetails")
+        </div>
+
+
+
