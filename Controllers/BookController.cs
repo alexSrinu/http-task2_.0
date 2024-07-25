@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using task_2._0.Models;
+using PagedList;
+using PagedList.Mvc;
 
 namespace task_2._0.Controllers
 {
@@ -70,6 +72,7 @@ namespace task_2._0.Controllers
 
             return Json(new { success = true, message = "" },JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
         public JsonResult CheckUser1(string Email)
         {
             //if (R1.CheckMobileExists(Phone))
@@ -154,32 +157,82 @@ namespace task_2._0.Controllers
 
 
         //}
-        public ActionResult GetDetails(string searchString)
+        public ActionResult GetDetails(string searchString, string CountryId, int? Page)
         {
-            var model =R1.GetDetails().ToList(); // Replace db.Register with your actual data retrieval method
+            int pageSize = 3; // Number of items per page
 
-            if (!String.IsNullOrEmpty(searchString))
+            int pageNumber = Page ?? 1;
+
+            var model = R1.GetPagedData(pageSize,pageNumber).ToList();
+            if (!string.IsNullOrEmpty(searchString))
             {
-                model = model.Where(s => s.Name.Contains(searchString)).ToList();
+                model = model.Where(r => r.Name.Contains(searchString)).ToList();
             }
 
-            return View(model);
+          
+            if (!string.IsNullOrEmpty(CountryId) && CountryId != "All")
+            {
+                model = model.Where(s => s.CountryId == CountryId).ToList();
+            }
+
+            
+            var allCountries = R1.GetDetails().Select(x => x.CountryId).Distinct().ToList();
+            ViewBag.CountryIdList = new SelectList(allCountries);
+          //  int pageSize = 3; // Number of items per page
+           // int pageNumber = Page ?? 1;
+
+
+
+            IPagedList<Register> pagedModel = model.ToPagedList(Page??1,3);
+
+            return View(pagedModel); // Pass IPagedList to the view
         }
 
-        public ActionResult SEdit(Register r)
+       
+
+        [HttpGet]
+        
+        public ActionResult SEdit(string Email,Register r)
         {
-            return View(R1.Details(r).Find(emp => emp.Email==r.Email ));
+            Register register = R1.Details(r).Find(emp => emp.Email == Email); // Assuming R1.Details returns a Register object based on Email
+            if (register == null)
+            {
+                return HttpNotFound(); // Handle case where the register with the given email is not found
+            }
+
+            return View(register);
         }
+       
+
         [HttpPost]
-        public ActionResult SEdit(string email, Register e1)
+        public ActionResult SEdit(Register e1)
         {
             if (ModelState.IsValid)
             {
-                R1.SEdit(e1);
-                return RedirectToAction("Details", new { e1.Email, e1.Password });
+                R1.SEdit(e1); // Assuming R1.SEdit updates the Register object
+                return RedirectToAction("Details", new { Email = e1.Email, Password = e1.Password }); // Redirect to details view
             }
-           return View();
+
+            // If ModelState is not valid, return to the edit view with validation errors
+            return View(e1);
         }
+
+
+        //[HttpGet]
+        //public ActionResult SEdit(Register r)
+        //{
+        //    return View(R1.Details(r).Find(emp => emp.Email==r.Email ));
+        //}
+        //[HttpPost]
+        //public ActionResult SEdit(string Email, Register e1)
+        //{
+        //    if(ModelState.IsValid)
+        //    {
+        //        R1.SEdit(e1);
+        //        return RedirectToAction("Details", new { e1.Email, e1.Password });
+        //    }
+        //   return View();
+        //}
         public ActionResult Details(Register r)
         {
             //ModelState.Clear();
@@ -211,6 +264,7 @@ namespace task_2._0.Controllers
 
         public ActionResult Edit(int Id)
         {
+           
             TempData["value"] = Id;
 
             return View(R1.GetDetails().Find(emp => emp.Id == Id));
@@ -218,9 +272,10 @@ namespace task_2._0.Controllers
         [HttpPost]
         public ActionResult Edit(int id, Register e1)
         {
-            R1.Edit(e1);
-            return RedirectToAction("GetDetails");
-            //return View();
+           
+                R1.Edit(e1);
+                return RedirectToAction("GetDetails");
+                        return View();
         }
         public ActionResult Delete(int id)
         {
