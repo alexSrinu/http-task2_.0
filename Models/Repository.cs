@@ -141,17 +141,18 @@ namespace task_2._0.Models
             }
             return obj;
         }
-
-        public List<Register> GetDetails()
+        public List<Register> GetPagedData(int pageSize,int pageNumber)
         {
-            List<Register> obj = new List<Register>();
-            //string QUERY = " SELECT EMPLOYEEID,EMPLOYEENAME,DESIGNATION,GENDER FROM EMPLOYEE where employeeid=EmpId";
-            SqlCommand cmd = new SqlCommand("pro_SELECT_STUDENT110", con);
+            List<Register> obj1 = new List<Register>();
+            SqlCommand cmd = new SqlCommand("GetPagedData", con);
+            //using (var context = new YourDbContext())
+            //{
+            //    // Parameters for the stored procedure
+
             cmd.CommandType = CommandType.StoredProcedure;
-            //cmd.Parameters.AddWithValue("@Id", r.Id);
-            //// cmd.Parameters.AddWithValue("@IsActive",r. IsActive);
-            //cmd.Parameters.AddWithValue("@Email", r.Email);
-            //cmd.Parameters.AddWithValue("@Password", r.Password);
+            cmd.Parameters.AddWithValue("@PageSize", pageSize);
+            cmd.Parameters.AddWithValue("@PageNumber", pageNumber);
+           
             SqlDataAdapter da = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             con.Open();
@@ -159,9 +160,9 @@ namespace task_2._0.Models
             con.Close();
             foreach (DataRow dr in dt.Rows)
             {
-                obj.Add(new Register
+                obj1.Add(new Register
                 {
-                    Id=Convert.ToInt32(dr["Id"]),
+                    Id = Convert.ToInt32(dr["Id"]),
                     Name = Convert.ToString(dr["Name"]),
                     Password = Convert.ToString(dr["Password"]),
                     Phone = Convert.ToString(dr["MobileNo"]),
@@ -174,7 +175,49 @@ namespace task_2._0.Models
 
                 }); ;
             }
-            return obj;
+            return obj1;
+        }
+                // Execute the stored procedure
+              //  var pagedData = context.Database.SqlQuery<YourEntityType>("GetPagedData @PageNumber, @PageSize", paramPageNumber, paramPageSize).ToList();
+
+              //
+             
+            
+        
+
+        public List<Register> GetDetails()
+        {
+           List<Register> obj = new List<Register>();
+        ////    //string QUERY = " SELECT EMPLOYEEID,EMPLOYEENAME,DESIGNATION,GENDER FROM EMPLOYEE where employeeid=EmpId";
+            SqlCommand cmd = new SqlCommand("pro_SELECT_STUDENT110", con);
+           cmd.CommandType = CommandType.StoredProcedure;
+          //cmd.Parameters.AddWithValue("@Id", r.Id);
+           //// cmd.Parameters.AddWithValue("@IsActive",r. IsActive);
+            //cmd.Parameters.AddWithValue("@Email", r.Email);
+           //cmd.Parameters.AddWithValue("@Password", r.Password);
+           SqlDataAdapter da = new SqlDataAdapter(cmd);
+           DataTable dt = new DataTable();
+           con.Open();
+        da.Fill(dt);
+        con.Close();
+       foreach (DataRow dr in dt.Rows)
+          {
+               obj.Add(new Register
+             {
+                  Id=Convert.ToInt32(dr["Id"]),
+                   Name = Convert.ToString(dr["Name"]),
+                  Password = Convert.ToString(dr["Password"]),
+                 Phone = Convert.ToString(dr["MobileNo"]),
+                   Email = Convert.ToString(dr["Email"]),
+                   CountryId = Convert.ToString(dr["CountryId"]),
+
+                   Gender = Convert.ToString(dr["Gender"]),
+                 Hobbies = Convert.ToString(dr["Hobbies"]),
+               DateOfBirth = Convert.ToDateTime(dr["DateOfBirth"])
+
+              }); ;
+           }
+           return obj;
         }
         //public List<Profile> prof(Profile p1)
         //{
