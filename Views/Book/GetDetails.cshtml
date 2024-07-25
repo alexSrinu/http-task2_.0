@@ -1,5 +1,6 @@
-﻿
-@model IEnumerable<task_2._0.Models.Register>
+﻿@using PagedList.Mvc;
+@using PagedList;
+@model IPagedList<task_2._0.Models.Register>
 
 @{
     ViewBag.Title = "GetDetails";
@@ -15,7 +16,27 @@
 <h2>GetDetails</h2>
 
 
-<form method="get" action="@Url.Action("GetDetails", "Book")">
+<form method="get" action="@Url.Action("GetDetails", "Book", FormMethod.Get)">
+
+
+
+
+    @*<div class="form-group">
+            @Html.Label("Filter by Country:")
+            @Html.DropDownList("CountryId", new SelectList(Model.Select(x => x.CountryId).Distinct()), "All", new { @class = "form-control" })
+        </div>*@
+    <div class="form-group">
+        @Html.Label("Filter by Country:")
+        @Html.DropDownList("CountryId", ViewBag.CountryIdList as SelectList, "All", new { @class = "form-control" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+
+
+
+
+
+
     <div class="form-group">
         <label for="searchName">Search by Name:</label>
         <input type="text" class="form-control" id="searchName" name="searchString" placeholder="Enter name">
@@ -35,29 +56,13 @@
     <table class="table">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.First().Name)
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Password)
-                </th>*@
 
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Phone)
-                </th>*@
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.First().Email)
             </th>
-            @*<th>
-                    @Html.DisplayNameFor(model => model.CountryId)
-                </th>*@
-            @*<th>
-                    @Html.DisplayNameFor(model => model.Gender)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Hobbies)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.DateOfBirth)*@
+
             </th>
             <th></th>
         </tr>
@@ -103,6 +108,77 @@
         }
 
     </table>
+    @*@if (Model.PageCount > 1)
+        {
+            Page @(Model.PageCount< Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+            @Html.PagedListPager(Model, page => Url.Action("Index", new { page, filter = ViewBag.Filter }))
+            }*@
+ 
+
+    <div class="pagination-container" id="pagenumber">
+        @if (Model.PageCount >= 1)
+        {
+            @*<span>Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount</span>*@
+            Html.PagedListPager(Model, page => Url.Action("GetDetails", new
+       {
+           //Page (Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+           page,
+
+
+
+           searchString = Request.QueryString["searchString"],
+           CountryId = Request.QueryString["CountryId"],
+           //currentFilter = ViewBag.CurrentFilter
+       }),
+                 new PagedListRenderOptions
+                 {
+                     Display = PagedListDisplayMode.IfNeeded,
+                     DisplayPageCountAndCurrentLocation = true,
+                     DisplayItemSliceAndTotal = true,
+                     UlElementClasses = new[] { "pagination" } // Add a class to the <ul> element
+                 })
+        }
+
+    </div>
+
+    @*<div class="pagination-container" id="pagenumber">
+        @if (Model.PageCount > 1)
+         {
+             Page @(Model.PageCount< Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+             @Html.PagedListPager(Model, Page => Url.Action("GetDetails", new
+        {
+            Page,
+            searchString = Request.QueryString["searchString"],
+            CountryId = Request.QueryString["CountryId"],
+        }),
+               new PagedListRenderOptions
+                  {
+                      Display = PagedListDisplayMode.IfNeeded,
+                 DisplayPageCountAndCurrentLocation = true,
+                 DisplayItemSliceAndTotal = true,
+                 UlElementClasses = new[] { "pagination" } // Add a class to the <ul> element
+             })
+         </div>*@
+
+    @*<div>
+             @Html.PagedListPager(Model, Page => Url.Action("GetDetails", new
+        {
+            Page,
+            searchString = Request.QueryString["searchString"],
+            CountryId = Request.QueryString["CountryId"],
+        }),
+              new PagedListRenderOptions()
+              {
+                  Display = PagedListDisplayMode.IfNeeded,
+                       DisplayPageCountAndCurrentLocation = true,
+                       DisplayItemSliceAndTotal = true
+              }
+
+             )
+
+         </div>*@
+
+
     <div class="logout-link">
         @Html.ActionLink("Logout", "Logout")
     </div>
@@ -119,6 +195,9 @@
                 });
             });
         });
+        //function page(pazeSize, pageNumber) {
+
+        //}
 
         function confirmDelete(id) {
             const url = `/Book/Delete/${id}`;
